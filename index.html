@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hệ Thống Giao Thông Thông Minh</title>
+    <style>
+        canvas {
+            display:block;
+            border: 1px solid black;
+            margin-top:10px;
+        }
+    </style>
+</head>
+<body>
+    <input id="uploadInput" type="file"/>
+    <button id="detectButton">Kiểm Tra Tai Nạn</button>
+    <button id="countButton">Kiểm Tra Mật Độ</button>
+    <canvas></canvas>
+    <img id="countImage" style="display:none"/>
+    <script>
+        const detectButton = document.getElementById("detectButton");
+        detectButton.addEventListener("click", async () => {
+            const input = document.getElementById("uploadInput");
+            const data = new FormData();
+            data.append("image_file", input.files[0], "image_file");
+            const response = await fetch("/detect", {
+                method: "post",
+                body: data
+            });
+            const boxes = await response.json();
+            draw_image_and_boxes(input.files[0], boxes);
+        });
+
+        const countButton = document.getElementById("countButton");
+        countButton.addEventListener("click", async () => {
+            const input = document.getElementById("uploadInput");
+            const data = new FormData();
+            data.append("image_file", input.files[0], "image_file");
+            const response = await fetch("/count", {
+                method: "post",
+                body: data
+            });
+            const responseJson = await response.json();
+            const congestionStatus = responseJson.congestion_status;
+            const boxes = responseJson.boxes;
+
+            const countImage = document.getElementById("countImage");
+            countImage.src = "/static/count.png"; // Change the path if needed
+            countImage.style.display = "block";
+            alert(congestionStatus);
+            draw_image_and_boxes1(input.files[0], boxes);
+        });
+
+        function draw_image_and_boxes(file, boxes) {
+            const img = new Image()
+            img.src = URL.createObjectURL(file);
+            img.onload = () => {
+                const canvas = document.querySelector("canvas");
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0);
+                ctx.strokeStyle = "#00FF00";
+                ctx.lineWidth = 3;
+                ctx.font = "18px serif";
+                boxes.forEach(([x1, y1, x2, y2, label]) => {
+                    ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+                    ctx.fillStyle = "#00ff00";
+                    const width = ctx.measureText(label).width;
+                    ctx.fillRect(x1, y1, width + 10, 25);
+                    ctx.fillStyle = "#000000";
+                    ctx.fillText(label, x1, y1 + 18);
+                });
+            }
+        }
+
+        function draw_image_and_boxes1(file, boxes) {
+            const img = new Image()
+            img.src = URL.createObjectURL(file);
+            img.onload = () => {
+                const canvas = document.querySelector("canvas");
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0);
+                ctx.strokeStyle = "#00FF00";
+                ctx.lineWidth = 3;
+                ctx.font = "18px serif";
+                boxes.forEach(([x1, y1, x2, y2, label]) => {
+                    ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+                    ctx.fillStyle = "#00ff00";
+                    const width = ctx.measureText(label).width;
+                    ctx.fillRect(x1, y1, width + 10, 25);
+                    ctx.fillStyle = "#000000";
+                    ctx.fillText(label, x1, y1 + 18);
+                });
+            }
+        }
+
+    </script>
+</body>
+</html>
