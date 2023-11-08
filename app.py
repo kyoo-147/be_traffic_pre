@@ -23,8 +23,8 @@ def count():
     return jsonify({"congestion_status": congestion_status, "boxes": boxes})
 
 def detect_objects_on_image(buf):
-    model = YOLO("best.pt")
-    results = model.predict(Image.open(buf))
+    model = YOLO("model/accident_1.pt")
+    results = model.predict(Image.open(buf), conf=0.1)
     result = results[0]
     output = []
     for box in result.boxes:
@@ -35,8 +35,8 @@ def detect_objects_on_image(buf):
     return output
 
 def detect_objects_on_image1(buf):
-    model = YOLO("yolov8n.pt")
-    results = model.predict(Image.open(buf))
+    model = YOLO("model/yolov8m.pt")
+    results = model.predict(Image.open(buf), conf=0.1)
     result = results[0]
     output = []
     count = 0

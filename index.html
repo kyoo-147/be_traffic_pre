@@ -61,8 +61,8 @@
                 const ctx = canvas.getContext("2d");
                 ctx.drawImage(img, 0, 0);
                 ctx.strokeStyle = "#00FF00";
-                ctx.lineWidth = 3;
-                ctx.font = "18px serif";
+                ctx.lineWidth = 2;
+                ctx.font = "16px serif";
                 boxes.forEach(([x1, y1, x2, y2, label]) => {
                     ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
                     ctx.fillStyle = "#00ff00";
@@ -84,8 +84,8 @@
                 const ctx = canvas.getContext("2d");
                 ctx.drawImage(img, 0, 0);
                 ctx.strokeStyle = "#00FF00";
-                ctx.lineWidth = 3;
-                ctx.font = "18px serif";
+                ctx.lineWidth = 2;
+                ctx.font = "16px serif";
                 boxes.forEach(([x1, y1, x2, y2, label]) => {
                     ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
                     ctx.fillStyle = "#00ff00";
